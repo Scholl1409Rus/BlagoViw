@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ECOHUB Ходынка — Сервисы</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f4f7f8;color:#1f2937;min-height:100vh}
+    .container{max-width:880px;margin:0 auto}
+    .cover{
+      min-height:44vh;
+      background:linear-gradient(135deg,#16a34a 0%,#4ade80 40%,#22c55e 100%);
+      border-radius:0 0 28px 28px; position:relative; overflow:hidden;
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .cover:after{content:""; position:absolute; inset:-40% -20% auto auto; width:80%; height:200%; background:radial-gradient(ellipse at top right, rgba(255,255,255,0.25), transparent 60%)}
+    .brand{color:#fff; text-align:center; z-index:1}
+    .brand h1{font-size:2rem; letter-spacing:.4px; font-weight:800}
+    .brand .tag{opacity:.95; margin-top:8px; font-size:0.98rem}
+    .services-block{background:#fff; border-radius:28px 28px 0 0; margin:-56px 14px 0; padding:26px 18px 90px; box-shadow:0 -10px 34px rgba(2,6,23,.08)}
+    .header{display:flex; align-items:center; justify-content:center; gap:8px; color:#111827}
+    .header h2{font-size:1.25rem}
+    .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:20px}
+    .item{position:relative; background:#f3f4f6; border-radius:18px; padding:18px 14px 16px; text-decoration:none; color:inherit; overflow:hidden}
+    .item .ico{font-size:28px; width:48px; height:48px; display:grid; place-items:center; border-radius:12px; background:#ecfdf5; color:#059669; margin-top:-34px; margin-bottom:8px; box-shadow:inset 0 0 0 1px rgba(16,185,129,.15)}
+    .item .title{font-weight:700; font-size:0.98rem; line-height:1.25}
+    .item .desc{opacity:.75; font-size:.85rem; margin-top:6px}
+    .widget{grid-column:span 2; background:#f3f4f6; border-radius:18px; padding:18px; position:relative}
+    .widget h3{font-size:1rem; margin-bottom:10px}
+    .muted{opacity:.7}
+    .split{display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+    .pill{display:inline-flex; align-items:center; gap:6px; font-size:.85rem; padding:8px 10px; background:#ecfdf5; border-radius:999px; color:#065f46}
+    .bar{height:8px; background:#e5e7eb; border-radius:999px; overflow:hidden}
+    .bar>span{display:block; height:100%; background:#10b981; width:0%}
+    .btn{appearance:none; border:0; border-radius:12px; padding:10px 14px; font-weight:700; background:#10b981; color:#fff; cursor:pointer}
+    .btn.secondary{background:#111827; color:#fff}
+    .row{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+    .list{display:grid; gap:8px}
+    .list .card{background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px}
+    .right{margin-left:auto}
+    @media (min-width:720px){ .grid{grid-template-columns:repeat(3,1fr)} }
+    @media (min-width:960px){ .grid{grid-template-columns:repeat(4,1fr)} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="cover">
+      <div class="brand">
+        <div class="pill" title="Эко-экосистема района"><i class="fa-solid fa-leaf"></i><span>ECOHUB Ходынка</span></div>
+        <h1>Добро пожаловать в эко‑экосистему района Ходынка</h1>
+        <p class="tag">Умные городские и «зелёные» сервисы — в одном месте</p>
+      </div>
+    </header>
+
+    <main class="services-block">
+      <div class="header">
+        <h2>Сервисы</h2>
+      </div>
+
+      <section class="grid" id="grid">
+        <!-- WIDGETS -->
+        <div class="widget" id="weatherWidget">
+          <h3><i class="fa-solid fa-cloud-sun"></i> Погода</h3>
+          <div class="split">
+            <div class="row">
+              <div class="pill"><i class="fa-solid fa-location-dot"></i><span>Ходынка</span></div>
+              <div id="weatherTemp" class="pill"><i class="fa-solid fa-temperature-half"></i><span>+18°C</span></div>
+              <div id="weatherCond" class="pill"><i class="fa-solid fa-cloud"></i><span>Облачно</span></div>
+            </div>
+            <div class="row">
+              <small id="weatherUpdated" class="muted">Обновлено — сейчас</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="widget" id="airWidget">
+          <h3><i class="fa-solid fa-wind"></i> Качество воздуха</h3>
+          <div class="split">
+            <div class="row">
+              <div class="pill"><i class="fa-solid fa-mask-ventilator"></i><span>AQI: <b id="aqiVal">32</b> (хорошо)</span></div>
+              <div class="pill"><i class="fa-regular fa-smile"></i><span id="aqiMsg">Можно гулять</span></div>
+            </div>
+            <div class="row" style="flex:1; min-width:220px">
+              <div class="bar" style="width:100%"><span id="aqiBar" style="width:22%"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="widget" id="ecoCounter">
+          <h3><i class="fa-solid fa-recycle"></i> Эко‑счётчик района</h3>
+          <div class="list">
+            <div class="card">
+              <div class="split">
+                <div>Пластик сдан (месяц)</div>
+                <div class="right"><b id="plastKg">312</b> кг</div>
+              </div>
+              <div class="bar"><span id="plastBar" style="width:62%"></span></div>
+            </div>
+            <div class="card">
+              <div class="split">
+                <div>Бумага сдана (месяц)</div>
+                <div class="right"><b id="paperKg">540</b> кг</div>
+              </div>
+              <div class="bar"><span id="paperBar" style="width:54%"></span></div>
+            </div>
+            <div class="card">
+              <div class="split">
+                <div>Саженцы высажены (сезон)</div>
+                <div class="right"><b id="trees">128</b></div>
+              </div>
+              <div class="bar"><span id="treesBar" style="width:43%"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="widget" id="eventsWidget">
+          <h3><i class="fa-solid fa-calendar-days"></i> События в парке</h3>
+          <div class="list" id="eventsList">
+            <div class="card"><b>Субботник у пруда</b><br><small class="muted">Сб, 11:00 — Точка сборки у сцены</small></div>
+            <div class="card"><b>Зелёный маркет</b><br><small class="muted">Вс, 12:00–18:00 — Центральная аллея</small></div>
+            <div class="card"><b>Йога на траве</b><br><small class="muted">Ежедневно, 7:30 — Лужайка №3</small></div>
+          </div>
+        </div>
+
+        <div class="widget" id="chargeWidget">
+          <h3><i class="fa-solid fa-bolt"></i> Зарядка (электросамокат/ЭВ)</h3>
+          <div class="split">
+            <div class="row">
+              <div id="chargeStatus" class="pill"><i class="fa-regular fa-circle-play"></i><span>Ожидание</span></div>
+              <div class="pill"><i class="fa-solid fa-clock"></i><span id="chargeTimer">00:00:00</span></div>
+            </div>
+            <div class="row">
+              <button class="btn" id="startBtn">Начать</button>
+              <button class="btn secondary" id="stopBtn" disabled>Стоп</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SERVICES -->
+        <a class="item" href="#" title="Лифты и вызовы">
+          <div class="ico"><i class="fa-solid fa-elevator"></i></div>
+          <div class="title">Лифт</div>
+          <div class="desc">Вызов и статус кабины</div>
+        </a>
+
+        <a class="item" href="#" title="Заявить проблему в доме">
+          <div class="ico"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+          <div class="title">Домовые заявки</div>
+          <div class="desc">УК, ремонт, обращения</div>
+        </a>
+
+        <a class="item" href="#" title="Карта раздельного сбора">
+          <div class="ico"><i class="fa-solid fa-recycle"></i></div>
+          <div class="title">Раздельный сбор</div>
+          <div class="desc">Пункты приёма рядом</div>
+        </a>
+
+        <a class="item" href="#" title="Общественный транспорт и МЦК">
+          <div class="ico"><i class="fa-solid fa-bus"></i></div>
+          <div class="title">Транспорт</div>
+          <div class="desc">Маршруты, расписание</div>
+        </a>
+
+        <a class="item" href="#" title="Парковки района">
+          <div class="ico"><i class="fa-solid fa-square-parking"></i></div>
+          <div class="title">Парковка</div>
+          <div class="desc">Свободные места, тарифы</div>
+        </a>
+
+        <a class="item" href="#" title="Карта парка">
+          <div class="ico"><i class="fa-solid fa-tree"></i></div>
+          <div class="title">Парк Ходынки</div>
+          <div class="desc">Навигация и точки интереса</div>
+        </a>
+
+        <a class="item" href="#" title="Эко-челленджи">
+          <div class="ico"><i class="fa-solid fa-seedling"></i></div>
+          <div class="title">Эко‑челленджи</div>
+          <div class="desc">Игры, баллы, призы</div>
+        </a>
+
+        <a class="item" href="#" title="Объявления и чат">
+          <div class="ico"><i class="fa-solid fa-comments"></i></div>
+          <div class="title">Сообщество</div>
+          <div class="desc">Общение жителей</div>
+        </a>
+
+        <a class="item" href="#" title="Профиль">
+          <div class="ico"><i class="fa-solid fa-user"></i></div>
+          <div class="title">Аккаунт</div>
+          <div class="desc">Настройки профиля</div>
+        </a>
+
+        <a class="item" href="#" title="Поддержка">
+          <div class="ico"><i class="fa-solid fa-life-ring"></i></div>
+          <div class="title">Поддержка</div>
+          <div class="desc">Чат с оператором</div>
+        </a>
+
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // ——— WEATHER (демо-данные + локальное «обновление») ———
+    (function weather(){
+      const temp = 18 + Math.round((Math.random()-0.5)*4);
+      const conds = ['Облачно','Малооблачно','Ясно','Дождь'];
+      const cond = conds[Math.floor(Math.random()*conds.length)];
+      document.getElementById('weatherTemp').querySelector('span').textContent = (temp>=0?'+':'')+temp+'°C';
+      document.getElementById('weatherCond').querySelector('span').textContent = cond;
+      const t = new Date();
+      document.getElementById('weatherUpdated').textContent = 'Обновлено — '+t.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+    })();
+
+    // ——— AIR QUALITY (демо-логика шкалы AQI) ———
+    (function air(){
+      const aqi = 22 + Math.floor(Math.random()*40); // 22–61
+      const bar = document.getElementById('aqiBar');
+      const val = document.getElementById('aqiVal');
+      const msg = document.getElementById('aqiMsg');
+      val.textContent = aqi;
+      bar.style.width = Math.min(100, Math.floor(aqi/1.5))+'%';
+      let text = 'Можно гулять';
+      if (aqi>50) text = 'Ограничить активность';
+      if (aqi>75) text = 'Не рекомендуется';
+      msg.textContent = text;
+    })();
+
+    // ——— CHARGE TIMER ———
+    (function charge(){
+      const startBtn = document.getElementById('startBtn');
+      const stopBtn  = document.getElementById('stopBtn');
+      const statusEl = document.getElementById('chargeStatus').querySelector('span');
+      const timerEl  = document.getElementById('chargeTimer');
+
+      let startAt = null;
+      let h;
+      function fmt(ms){
+        const s = Math.floor(ms/1000);
+        const hh = String(Math.floor(s/3600)).padStart(2,'0');
+        const mm = String(Math.floor((s%3600)/60)).padStart(2,'0');
+        const ss = String(s%60).padStart(2,'0');
+        return `${hh}:${mm}:${ss}`;
+      }
+      function tick(){
+        if (!startAt) return;
+        timerEl.textContent = fmt(Date.now()-startAt);
+      }
+      startBtn.addEventListener('click', ()=>{
+        if (startAt) return;
+        startAt = Date.now();
+        statusEl.textContent = 'Идёт зарядка';
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        h = setInterval(tick, 500);
+      });
+      stopBtn.addEventListener('click', ()=>{
+        clearInterval(h);
+        h = null;
+        startAt = null;
+        statusEl.textContent = 'Ожидание';
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+      });
+    })();
+  </script>
+</body>
+</html>

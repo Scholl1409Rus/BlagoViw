@@ -1,0 +1,725 @@
+<<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ECOHUB Ходынка — Вызов лифта</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background: #f5f5f5;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .cover {
+      height: 35vh;
+      min-height: 300px;
+      background: linear-gradient(135deg, #16a34a 0%, #4ade80 40%, #22c55e 100%);
+      border-radius: 0 0 30px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
+      border-radius: 50%;
+    }
+
+    .logo {
+      text-align: center;
+      color: white;
+      z-index: 1;
+      position: relative;
+    }
+
+    .logo .icon {
+      font-size: 4rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .logo h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .logo .subtitle {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .form-block {
+      background: white;
+      border-radius: 30px 30px 0 0;
+      padding: 30px 20px 120px;
+      margin: -60px 15px 0;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+    }
+
+    .title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .building-info {
+      background: #f0f9ff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .building-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .building-text {
+      font-size: 0.9rem;
+      color: #0c4a6e;
+      font-weight: 500;
+    }
+
+    .current-floor-display {
+      background: #f0f9ff;
+      border: 1px solid #0ea5e9;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .current-label {
+      font-size: 0.9rem;
+      color: #0369a1;
+      margin-bottom: 4px;
+    }
+
+    .current-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0c4a6e;
+    }
+
+    .floor-input-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .floor-input {
+      flex: 1;
+      padding: 14px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: center;
+      transition: 0.3s;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .floor-input:focus {
+      outline: none;
+      border-color: #4446E1;
+      box-shadow: 0 0 0 3px rgba(68, 70, 225, 0.1);
+    }
+
+    .floors-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      padding: 4px;
+    }
+
+    .floor-btn {
+      aspect-ratio: 1;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      background: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      color: #4b5563;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .floor-btn:hover {
+      border-color: #4446E1;
+      color: #4446E1;
+      transform: translateY(-2px);
+    }
+
+    .floor-btn.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .floor-btn.current {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #d97706;
+    }
+
+    .btn-call {
+      padding: 14px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #16a34a;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .btn-call:hover {
+      background: #15803d;
+      transform: translateY(-2px);
+    }
+
+    .btn-call:disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .emergency-button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #dc2626;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .emergency-button:hover {
+      background: #b91c1c;
+    }
+
+    .lift-status-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .lift-status-card.active {
+      display: block;
+    }
+
+    .status-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    .status-indicator.moving {
+      background: #f59e0b;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .lift-details {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .detail-item {
+      text-align: center;
+      padding: 8px;
+      background: white;
+      border-radius: 8px;
+    }
+
+    .detail-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1f2937;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .detail-label {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    .lift-loader {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .lift-loader.active {
+      display: block;
+    }
+
+    .loader-spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid #16a34a;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+
+    .popup.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .popup-content {
+      background-color: #fff;
+      border-radius: 24px;
+      padding: 40px 30px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      transform: translateY(20px);
+      transition: transform 0.3s;
+    }
+
+    .popup.show .popup-content {
+      transform: translateY(0);
+    }
+
+    .popup-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+    }
+
+    .popup-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 8px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .popup-message {
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Popup уведомления -->
+  <div id="alertPopup" class="popup">
+    <div class="popup-content">
+      <div class="popup-icon" id="alertIcon">
+        <i class="fa-solid fa-info-circle"></i>
+      </div>
+      <div class="popup-title" id="alertTitle">Уведомление</div>
+      <div class="popup-message" id="alertMessage">Сообщение</div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="cover">
+      <button class="back-btn" onclick="goBack()">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <div class="logo">
+        <i class="fa-solid fa-elevator icon"></i>
+        <h1>Вызов лифта</h1>
+        <div class="subtitle">ECOHUB Ходынка</div>
+      </div>
+    </div>
+
+    <div class="form-block">
+      <div class="title">Выберите этаж</div>
+      
+      <!-- Информация о здании -->
+      <div class="building-info">
+        <div class="building-icon">🏢</div>
+        <div class="building-text">15-этажное здание • 3 лифта</div>
+      </div>
+
+      <!-- Текущий этаж -->
+      <div class="current-floor-display">
+        <div class="current-label">Вы находитесь на</div>
+        <div class="current-number" id="currentFloorDisplay">5</div>
+      </div>
+
+      <!-- Ввод этажа -->
+      <div class="floor-input-group">
+        <input type="number" class="floor-input" id="floorInput" placeholder="Этаж" min="1" max="15" />
+        <button class="btn-call" onclick="callLiftToInput()" id="callInputBtn">
+          <i class="fa-solid fa-arrow-up"></i>
+          Вызвать
+        </button>
+      </div>
+
+      <!-- Быстрый выбор этажей -->
+      <div class="floors-grid" id="floorsGrid">
+        <!-- Этажи генерируются JavaScript -->
+      </div>
+
+      <!-- Статус лифта -->
+      <div class="lift-status-card" id="liftStatusCard">
+        <div class="status-header">
+          <div class="status-indicator" id="statusIndicator"></div>
+          <span id="statusMessage">Лифт движется к вам</span>
+        </div>
+        <div class="lift-details">
+          <div class="detail-item">
+            <div class="detail-value" id="liftCurrentFloor">8</div>
+            <div class="detail-label">этаж</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-value" id="estimatedTime">2:30</div>
+            <div class="detail-label">осталось</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-value" id="liftDirection">↓</div>
+            <div class="detail-label">направление</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Загрузка -->
+      <div class="lift-loader" id="liftLoader">
+        <div class="loader-spinner"></div>
+        <div>Отправляем вызов...</div>
+      </div>
+
+      <!-- Экстренная кнопка -->
+      <button class="emergency-button" onclick="callLiftEmergency()">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Экстренная помощь
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ——— LIFT FUNCTIONALITY ———
+    let liftCurrentFloor = 5; // Текущий этаж пользователя
+    let liftPosition = 12; // Текущий этаж лифта
+    let isLiftMoving = false;
+
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeLift();
+    });
+
+    function initializeLift() {
+      generateFloorButtons();
+      updateCurrentFloorDisplay();
+      
+      // Автообновление позиции лифта
+      setInterval(updateLiftPosition, 3000);
+      
+      // Обработка Enter в поле ввода
+      const floorInput = document.getElementById('floorInput');
+      if (floorInput) {
+        floorInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            callLiftToInput();
+          }
+        });
+      }
+    }
+
+    function generateFloorButtons() {
+      const grid = document.getElementById('floorsGrid');
+      if (!grid) return;
+      
+      grid.innerHTML = '';
+      
+      for (let i = 1; i <= 15; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'floor-btn';
+        btn.textContent = i;
+        btn.onclick = () => callLiftToFloor(i);
+        
+        if (i === liftCurrentFloor) {
+          btn.classList.add('current');
+          btn.disabled = true;
+        }
+        
+        grid.appendChild(btn);
+      }
+    }
+
+    function updateCurrentFloorDisplay() {
+      const display = document.getElementById('currentFloorDisplay');
+      if (display) {
+        display.textContent = liftCurrentFloor;
+      }
+    }
+
+    function callLiftToInput() {
+      const input = document.getElementById('floorInput');
+      const floor = parseInt(input.value);
+      
+      if (!floor || floor < 1 || floor > 15) {
+        showAlert('Введите этаж от 1 до 15', 'error');
+        return;
+      }
+      
+      if (floor === liftCurrentFloor) {
+        showAlert('Вы уже находитесь на этом этаже', 'info');
+        return;
+      }
+      
+      callLiftToFloor(floor);
+    }
+
+    function callLiftToFloor(floor) {
+      if (floor === liftCurrentFloor) {
+        showAlert('Вы уже находитесь на этом этаже', 'info');
+        return;
+      }
+
+      // Показать загрузку
+      const loader = document.getElementById('liftLoader');
+      const btn = document.getElementById('callInputBtn');
+      
+      if (loader) loader.classList.add('active');
+      if (btn) btn.disabled = true;
+
+      // Симуляция API вызова
+      setTimeout(() => {
+        if (loader) loader.classList.remove('active');
+        if (btn) btn.disabled = false;
+        
+        // Показать статус лифта
+        startLiftMovement(floor);
+        
+        // Показать успешный вызов
+        showAlert(`Лифт вызван на ${floor} этаж!`, 'success');
+      }, 1500);
+    }
+
+    function startLiftMovement(targetFloor) {
+      const statusCard = document.getElementById('liftStatusCard');
+      const statusIndicator = document.getElementById('statusIndicator');
+      const statusMessage = document.getElementById('statusMessage');
+      
+      if (statusCard) statusCard.classList.add('active');
+      if (statusIndicator) statusIndicator.classList.add('moving');
+      if (statusMessage) statusMessage.textContent = `Лифт движется на ${targetFloor} этаж`;
+      
+      isLiftMoving = true;
+      
+      // Симуляция движения лифта
+      const moveInterval = setInterval(() => {
+        if (liftPosition < targetFloor) {
+          liftPosition++;
+          const dirEl = document.getElementById('liftDirection');
+          if (dirEl) dirEl.textContent = '↑';
+        } else if (liftPosition > targetFloor) {
+          liftPosition--;
+          const dirEl = document.getElementById('liftDirection');
+          if (dirEl) dirEl.textContent = '↓';
+        } else {
+          // Лифт прибыл
+          clearInterval(moveInterval);
+          if (statusIndicator) statusIndicator.classList.remove('moving');
+          if (statusMessage) statusMessage.textContent = 'Лифт прибыл!';
+          const dirEl = document.getElementById('liftDirection');
+          if (dirEl) dirEl.textContent = '●';
+          
+          // Звуковое уведомление
+          if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance('Лифт прибыл');
+            utterance.rate = 0.8;
+            utterance.pitch = 1.2;
+            speechSynthesis.speak(utterance);
+          }
+          
+          setTimeout(() => {
+            if (statusCard) statusCard.classList.remove('active');
+            isLiftMoving = false;
+          }, 3000);
+        }
+        
+        const floorEl = document.getElementById('liftCurrentFloor');
+        if (floorEl) floorEl.textContent = liftPosition;
+        
+        // Подсчет времени
+        const timeLeft = Math.abs(liftPosition - targetFloor) * 5; // 5 секунд на этаж
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        const timeEl = document.getElementById('estimatedTime');
+        if (timeEl) timeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+      }, 1000);
+    }
+
+    function updateLiftPosition() {
+      if (!isLiftMoving) {
+        // Случайное движение лифта когда он не вызван
+        if (Math.random() > 0.7) {
+          liftPosition += Math.random() > 0.5 ? 1 : -1;
+          liftPosition = Math.max(1, Math.min(15, liftPosition));
+        }
+      }
+    }
+
+    function callLiftEmergency() {
+      // Показать загрузку
+      const loader = document.getElementById('liftLoader');
+      if (loader) loader.classList.add('active');
+      
+      setTimeout(() => {
+        if (loader) loader.classList.remove('active');
+        showAlert('Диспетчер вызван!\nПомощь прибудет через 5-10 минут', 'emergency');
+      }, 2000);
+    }
+
+    // ——— ALERT SYSTEM ———
+    function showAlert(message, type = 'info') {
+      const popup = document.getElementById('alertPopup');
+      const icon = document.getElementById('alertIcon');
+      const title = document.getElementById('alertTitle');
+      const msg = document.getElementById('alertMessage');
+      
+      let iconClass = 'fa-info-circle';
+      let titleText = 'Информация';
+      let iconColor = '#3b82f6';
+      
+      if (type === 'success') {
+        iconClass = 'fa-check-circle';
+        titleText = 'Успешно';
+        iconColor = '#10b981';
+      } else if (type === 'error') {
+        iconClass = 'fa-exclamation-triangle';
+        titleText = 'Ошибка';
+        iconColor = '#dc2626';
+      } else if (type === 'emergency') {
+        iconClass = 'fa-phone';
+        titleText = 'Экстренный вызов';
+        iconColor = '#dc2626';
+      }
+      
+      icon.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+      icon.style.color = iconColor;
+      title.textContent = titleText;
+      msg.textContent = message;
+      
+      popup.classList.add('show');
+      
+      setTimeout(() => {
+        popup.classList.remove('show');
+      }, 3000);
+    }
+
+    function goBack() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        alert('Возврат к главной странице');
+      }
+    }
+  </script>
+</body>
+</html>

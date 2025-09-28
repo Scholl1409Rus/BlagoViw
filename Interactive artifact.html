@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ECOHUB Ходынка — Раздельный сбор</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f4f7f8;color:#1f2937;min-height:100vh}
+    .container{max-width:880px;margin:0 auto}
+    .header{background:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+    .back-btn{background:none;border:0;font-size:20px;color:#059669;cursor:pointer;padding:8px}
+    .header h1{font-size:1.4rem;font-weight:700;font-family:'Montserrat',sans-serif}
+    .main{padding:20px}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+    .stat-card{background:#fff;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+    .stat-icon{width:60px;height:60px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff}
+    .stat-icon.plastic{background:#3b82f6}
+    .stat-icon.paper{background:#f59e0b}
+    .stat-icon.glass{background:#10b981}
+    .stat-icon.metal{background:#8b5cf6}
+    .stat-number{font-size:1.8rem;font-weight:800;color:#1f2937;font-family:'Montserrat',sans-serif}
+    .stat-label{font-size:0.9rem;color:#6b7280;margin-top:4px;font-family:'Montserrat',sans-serif}
+    .section{background:#fff;border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+    .section h3{font-size:1.1rem;font-weight:600;margin-bottom:16px;font-family:'Montserrat',sans-serif}
+    .map-container{height:300px;background:#f3f4f6;border-radius:12px;position:relative;overflow:hidden;margin-bottom:20px}
+    .map-placeholder{display:flex;align-items:center;justify-content:center;height:100%;color:#6b7280;font-size:1.1rem;font-family:'Montserrat',sans-serif}
+    .point-list{display:grid;gap:12px}
+    .point-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;position:relative}
+    .point-card.closest{border-left:4px solid #10b981;background:#f0fdf4}
+    .point-header{display:flex;justify-content:between;align-items:start;margin-bottom:12px}
+    .point-info{flex:1}
+    .point-name{font-weight:600;font-size:1rem;color:#1f2937;font-family:'Montserrat',sans-serif}
+    .point-address{font-size:0.85rem;color:#6b7280;margin-top:4px}
+    .point-distance{background:#10b981;color:#fff;padding:4px 8px;border-radius:20px;font-size:0.8rem;font-weight:500;font-family:'Montserrat',sans-serif}
+    .point-distance.far{background:#f59e0b}
+    .materials{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .material-tag{padding:4px 8px;border-radius:20px;font-size:0.8rem;font-weight:500;font-family:'Montserrat',sans-serif}
+    .material-tag.plastic{background:#dbeafe;color:#1e40af}
+    .material-tag.paper{background:#fef3c7;color:#92400e}
+    .material-tag.glass{background:#d1fae5;color:#065f46}
+    .material-tag.metal{background:#e9d5ff;color:#7c2d12}
+    .material-tag.clothes{background:#fce7f3;color:#be185d}
+    .point-schedule{display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#6b7280}
+    .btn{background:#10b981;color:#fff;border:0;border-radius:12px;padding:12px 20px;font-weight:600;cursor:pointer;font-family:'Montserrat',sans-serif;transition:background 0.2s;width:100%}
+    .btn:hover{background:#059669}
+    .btn.secondary{background:#6b7280}
+    .btn.secondary:hover{background:#4b5563}
+    .guide{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-radius:16px;padding:20px;margin-bottom:20px}
+    .guide h3{color:#fff;margin-bottom:12px}
+    .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:16px}
+    .guide-item{background:rgba(255,255,255,0.1);border-radius:12px;padding:16px;text-align:center}
+    .guide-icon{font-size:32px;margin-bottom:8px}
+    .guide-title{font-weight:600;margin-bottom:4px;font-family:'Montserrat',sans-serif}
+    .guide-desc{font-size:0.85rem;opacity:0.9}
+    .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000}
+    .modal-content{background:#fff;border-radius:16px;padding:20px;margin:50px auto;max-width:500px;position:relative}
+    .modal-close{position:absolute;top:15px;right:15px;background:none;border:0;font-size:20px;cursor:pointer;color:#6b7280}
+    .tips-grid{display:grid;gap:12px;margin-top:16px}
+    .tip-item{background:#f8fafc;border-radius:8px;padding:12px;display:flex;align-items:start;gap:12px}
+    .tip-icon{color:#10b981;font-size:18px;margin-top:2px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <button class="back-btn" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+      <h1><i class="fa-solid fa-recycle"></i> Раздельный сбор</h1>
+    </header>
+
+    <main class="main">
+      <!-- Статистика района -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon plastic"><i class="fa-solid fa-bottle-water"></i></div>
+          <div class="stat-number">312</div>
+          <div class="stat-label">кг пластика</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon paper"><i class="fa-solid fa-newspaper"></i></div>
+          <div class="stat-number">540</div>
+          <div class="stat-label">кг бумаги</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon glass"><i class="fa-solid fa-wine-bottle"></i></div>
+          <div class="stat-number">128</div>
+          <div class="stat-label">кг стекла</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon metal"><i class="fa-solid fa-can-food"></i></div>
+          <div class="stat-number">89</div>
+          <div class="stat-label">кг металла</div>
+        </div>
+      </div>
+
+      <!-- Гид по сортировке -->
+      <div class="guide">
+        <h3><i class="fa-solid fa-lightbulb"></i> Как правильно сортировать</h3>
+        <p style="opacity:0.9">Следуйте простым правилам для эффективной переработки</p>
+        <div class="guide-grid">
+          <div class="guide-item">
+            <div class="guide-icon">🧴</div>
+            <div class="guide-title">Пластик</div>
+            <div class="guide-desc">Бутылки, контейнеры с маркировкой 1,2,4,5</div>
+          </div>
+          <div class="guide-item">
+            <div class="guide-icon">📄</div>
+            <div class="guide-title">Бумага</div>
+            <div class="guide-desc">Газеты, журналы, картон без пластика</div>
+          </div>
+          <div class="guide-item">
+            <div class="guide-icon">🍺</div>
+            <div class="guide-title">Стекло</div>
+            <div class="guide-desc">Банки и бутылки, чистые, без крышек</div>
+          </div>
+          <div class="guide-item">
+            <div class="guide-icon">🥫</div>
+            <div class="guide-title">Металл</div>
+            <div class="guide-desc">Консервные банки, фольга, крышки</div>
+          </div>
+        </div>
+        <button class="btn secondary" onclick="showTips()" style="margin-top:16px">
+          <i class="fa-solid fa-info-circle"></i> Подробные советы
+        </button>
+      </div>
+
+      <!-- Карта пунктов -->
+      <div class="section">
+        <h3><i class="fa-solid fa-map-marker-alt"></i> Ближайшие пункты приёма</h3>
+        <div class="map-container">
+          <div class="map-placeholder">
+            <div>
+              <i class="fa-solid fa-map" style="font-size:48px;margin-bottom:12px;display:block;text-align:center"></i>
+              Интерактивная карта пунктов сбора
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Список пунктов -->
+      <div class="section">
+        <h3><i class="fa-solid fa-list"></i> Пункты в районе</h3>
+        <div class="point-list">
+          <div class="point-card closest">
+            <div class="point-header">
+              <div class="point-info">
+                <div class="point-name">ТЦ "Авиапарк"</div>
+                <div class="point-address">Ходынский бульвар, 4</div>
+              </div>
+              <div class="point-distance">150м</div>
+            </div>
+            <div class="materials">
+              <span class="material-tag plastic">Пластик</span>
+              <span class="material-tag paper">Бумага</span>
+              <span class="material-tag glass">Стекло</span>
+              <span class="material-tag clothes">Одежда</span>
+            </div>
+            <div class="point-schedule">
+              <i class="fa-solid fa-clock"></i>
+              <span>Ежедневно 10:00-22:00</span>
+            </div>
+          </div>
+
+          <div class="point-card">
+            <div class="point-header">
+              <div class="point-info">
+                <div class="point-name">Двор дома №12</div>
+                <div class="point-address">ул. Беговая, 12</div>
+              </div>
+              <div class="point-distance">280м</div>
+            </div>
+            <div class="materials">
+              <span class="material-tag plastic">Пластик</span>
+              <span class="material-tag paper">Бумага</span>
+              <span class="material-tag metal">Металл</span>
+            </div>
+            <div class="point-schedule">
+              <i class="fa-solid fa-clock"></i>
+              <span>Круглосуточно</span>
+            </div>
+          </div>
+
+          <div class="point-card">
+            <div class="point-header">
+              <div class="point-info">
+                <div class="point-name">Парк "Ходынское поле"</div>
+                <div class="point-address">Входная группа, центр</div>
+              </div>
+              <div class="point-distance far">420м</div>
+            </div>
+            <div class="materials">
+              <span class="material-tag plastic">Пластик</span>
+              <span class="material-tag paper">Бумага</span>
+              <span class="material-tag glass">Стекло</span>
+              <span class="material-tag metal">Металл</span>
+            </div>
+            <div class="point-schedule">
+              <i class="fa-solid fa-clock"></i>
+              <span>8:00-20:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Кнопка действия -->
+      <button class="btn" onclick="reportIssue()">
+        <i class="fa-solid fa-exclamation-triangle"></i> Сообщить о переполнении контейнера
+      </button>
+    </main>
+  </div>
+
+  <!-- Модальное окно с советами -->
+  <div class="modal" id="tipsModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeTips()">×</button>
+      <h3><i class="fa-solid fa-tips"></i> Полезные советы</h3>
+      <div class="tips-grid">
+        <div class="tip-item">
+          <div class="tip-icon"><i class="fa-solid fa-droplet"></i></div>
+          <div>
+            <strong>Очищайте упаковку</strong><br>
+            <small>Споласкивайте от остатков еды перед выбросом</small>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon"><i class="fa-solid fa-tags"></i></div>
+          <div>
+            <strong>Снимайте этикетки</strong><br>
+            <small>Особенно с пластиковых бутылок и стеклянных банок</small>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon"><i class="fa-solid fa-compress-arrows-alt"></i></div>
+          <div>
+            <strong>Сжимайте пластик</strong><br>
+            <small>Это экономит место в контейнерах</small>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon"><i class="fa-solid fa-ban"></i></div>
+          <div>
+            <strong>Не смешивайте материалы</strong><br>
+            <small>Каждый тип отходов в свой контейнер</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showTips() {
+      document.getElementById('tipsModal').style.display = 'block';
+    }
+
+    function closeTips() {
+      document.getElementById('tipsModal').style.display = 'none';
+    }
+
+    function reportIssue() {
+      const btn = event.target;
+      const originalText = btn.innerHTML;
+      
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Отправляем сообщение...';
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        alert('Спасибо за сообщение!\nДиспетчер уведомлён о переполнении контейнера.\nОчистка запланирована на ближайшее время.');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }, 2000);
+    }
+
+    // Закрытие модального окна при клике вне его
+    window.onclick = function(event) {
+      const modal = document.getElementById('tipsModal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    }
+
+    // Анимация счётчиков
+    function animateCounters() {
+      const counters = document.querySelectorAll('.stat-number');
+      counters.forEach(counter => {
+        const target = parseInt(counter.textContent);
+        let current = 0;
+        const increment = target / 50;
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            counter.textContent = target;
+            clearInterval(timer);
+          } else {
+            counter.textContent = Math.floor(current);
+          }
+        }, 30);
+      });
+    }
+
+    // Запуск анимации при загрузке
+    window.addEventListener('load', animateCounters);
+  </script>
+</body>
+</html>
